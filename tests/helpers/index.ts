@@ -1,0 +1,1 @@
+export { readKeypairFromFile } from "./readKeypair";

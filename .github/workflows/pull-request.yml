@@ -1,0 +1,59 @@
+name: pull-request
+
+on:
+  pull_request:
+
+env:
+  TERM: xterm-256color
+  SETUP_NODE_VERSION: "16"
+  SETUP_NODE_CACHE: "npm"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: "rustfmt"
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "${{ env.SETUP_NODE_VERSION }}"
+          cache: "${{ env.SETUP_NODE_CACHE }}"
+
+      - uses: arduino/setup-task@v1
+
+      - run: task install-solana-toolchain
+      - run: echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+      - run: npm install
+
+      - run: solana config set --url localhost
+      - run: task build:local
+      - run: task test:local
+
+  verify-devnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          components: "rustfmt"
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "${{ env.SETUP_NODE_VERSION }}"
+          cache: "${{ env.SETUP_NODE_CACHE }}"
+      - run: npm bin >> $GITHUB_PATH
+
+      - uses: arduino/setup-task@v1
+
+      - run: task install-solana-toolchain
+      - run: echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+      - run: npm install
+      - run: task build:verifiable
+      - run: task verify:devnet

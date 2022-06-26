@@ -1,0 +1,26 @@
+anchor_version = "0.24.2"
+
+[workspace]
+members = ["programs/monkey-staking"]
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/prog.json"
+
+[scripts]
+test = "npx ts-mocha --node-option async-stack-traces --colors -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+
+[programs.localnet]
+monkey_staking = "tMLq5fBEh9rULZb2ZhWhDRjgzMZXKxi1wRRegWVfkKP"
+
+[programs.devnet]
+monkey_staking = "MLnE7HFVmVdVTqGQEYWyBPhNQisb7RVUfKdU8cgAzET"
+
+[programs.testnet]
+monkey_staking = "MLnE7HFVmVdVTqGQEYWyBPhNQisb7RVUfKdU8cgAzET"
+
+[programs.mainnet]
+monkey_staking = "MLnE7HFVmVdVTqGQEYWyBPhNQisb7RVUfKdU8cgAzET"
